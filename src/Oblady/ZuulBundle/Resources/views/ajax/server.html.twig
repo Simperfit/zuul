@@ -1,0 +1,59 @@
+
+{% twig_js name="serverSubject" %}
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#groups-subject" role="tab" data-toggle="tab">Groups</a></li>
+    <li><a href="#users-subject" role="tab" data-toggle="tab">Users</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active" id="groups-subject">
+        <div class="pull-right overtop">
+            <div class="input-group ">
+                <span class="input-group-addon">#</span>
+                <input class="filter-input form-control" placeholder="Filter" data-target="#groups-form .list-group-item">
+            </div>
+         </div>
+        <form id="groups-form"  class="form-inline" action="{{server.groupUrl}}"  role="form">
+            <ul class="list-group">
+                {% for group in groups %}
+                    <li class="list-group-item{%if group.selected %} list-group-item-info {% endif %}">
+                        <input class="pull-right" id="group-{{group.id}}}}" name="groups[]" type="checkbox" {%if group.selected %} checked {% endif %}  value="{{group.id}}">
+                        <label for="group-{{group.id}}">{{group.name}}</label>
+                    </li>
+                {% endfor %} 
+            </ul>
+            <div class="form-group">
+                <button type="reset" class="btn btn-default">Reset</button>
+                <button type="button" data-loading-text="Loading..."  class="btn btn-primary  has-spinner">
+                     <span class="spinner"><i class="fa fa-spin fa-spinner"></i></span>
+                      Submit
+                </button>
+            </div>
+        </form>
+
+    </div> 
+    <div class="tab-pane" id="users-subject">
+         <div class="pull-right overtop">
+            <div class="input-group ">
+                <span class="input-group-addon">#</span>
+                <input class="filter-input form-control" placeholder="Filter" data-target="#users-form .list-group-item">
+            </div>
+         </div>
+        <form  id="users-form" class="form-inline" action="{{server.userUrl}}"  role="form">
+            <ul class="list-group">
+                {% for user in users %}
+                    <li class="list-group-item {%if user.selected %} list-group-item-info{% endif %}" >
+                        <input class="pull-right" id="user-{{user.id}}" name="users[]" type="checkbox" {%if user.selected %} checked {% endif %} value="{{user.id}}">
+                        <label for="user-{{user.id}}">{{user.name}}</label>
+                    </li>
+                {% endfor %} 
+            </ul>
+            <button type="reset" class="btn btn-default">Reset</button>
+            <button type="button" data-loading-text="Loading..."  class="btn btn-primary has-spinner">
+                <span class="spinner"><i class="fa fa-spin fa-spinner"></i></span>
+                Submit
+            </button>
+        </form>
+    </div>
+</div>      
+</div>

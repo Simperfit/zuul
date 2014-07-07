@@ -1,0 +1,61 @@
+parameters:
+  oblady_zuul.key_manager.class: Oblady\ZuulBundle\Services\SSHKeyManager
+  oblady_zuul.cluster_manager.class: Oblady\ZuulBundle\Services\ClusterManager
+  oblady_zuul.server_manager.class: Oblady\ZuulBundle\Services\ServerManager
+    
+services:
+
+  oblady_zuul.cluster_manager: 
+    class:     '%oblady_zuul.cluster_manager.class%'
+    calls:
+            - [setContainer, ["@service_container"]]
+  oblady_zuul.server_manager: 
+    class:     '%oblady_zuul.server_manager.class%'
+    calls:
+            - [setContainer, ["@service_container"]]            
+  oblady_zuul.key_manager: 
+    class:     '%oblady_zuul.key_manager.class%'
+    calls:
+            - [setContainer, ["@service_container"]]     
+            
+  sonata.admin.key:
+        class: Oblady\ZuulBundle\Admin\KeyAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Keys", label: "SSH Keys" }
+        arguments:
+            - ~
+            - Oblady\ZuulBundle\Entity\Key
+            - ~
+        calls:
+            - [ setTranslationDomain, [ObladyZuulBundle]]
+
+  sonata.admin.server:
+        class: Oblady\ZuulBundle\Admin\ServerAdmin
+        arguments: [~, Oblady\ZuulBundle\Entity\Server, ObladyZuulBundle:ServerAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Servers", label: "Server"}
+
+  sonata.admin.cluster:
+        class: Oblady\ZuulBundle\Admin\ClusterAdmin
+        arguments: [~, Oblady\ZuulBundle\Entity\Cluster, ObladyZuulBundle:ClusterAdmin]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: "Servers", label: Cluster}
+            
+  sonata.admin.map:
+        class: Oblady\ZuulBundle\Admin\MapAdmin
+        arguments: 
+        arguments:
+            - ~
+            - ~
+            - ObladyZuulBundle:Map        
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: "Map", label: Map}
+  sonata.admin.request:
+        class: Oblady\ZuulBundle\Admin\RequestAdmin
+        arguments: 
+        arguments:
+            - ~
+            - ~
+            - ObladyZuulBundle:Request        
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: "Request", label: Request}

@@ -1,0 +1,33 @@
+
+{% twig_js name="groupSubject" %}
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#users-subject" role="tab" data-toggle="tab">Users</a></li>
+</ul>
+<div class="tab-content">
+
+    <div class="active" class="tab-pane" id="users-subject">
+         <div class="pull-right overtop">
+            <div class="input-group ">
+                <span class="input-group-addon">#</span>
+                <input class="filter-input form-control" placeholder="Filter" data-target="#users-form .list-group-item">
+            </div>
+         </div>
+        <form  id="users-form" class="form-inline" action="{{group.userUrl}}"  role="form">
+            <ul class="list-group">
+                {% for user in users %}
+                    <li class="list-group-item {%if user.selected %} list-group-item-info{% endif %}" >
+                        <input class="pull-right" id="user-{{user.id}}" name="users[]" type="checkbox" {%if user.selected %} checked {% endif %} value="{{user.id}}">
+                        <label for="user-{{user.id}}">{{user.name}}</label>
+                    </li>
+                {% endfor %} 
+            </ul>
+            <button type="reset" class="btn btn-default">Reset</button>
+            <button type="button" data-loading-text="Loading..."  class="btn btn-primary has-spinner">
+                <span class="spinner"><i class="fa fa-spin fa-spinner"></i></span>
+                Submit
+            </button>
+        </form>
+    </div>
+</div>      
+</div>

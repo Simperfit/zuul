@@ -1,0 +1,164 @@
+#associeted,#unassocieted  {
+    min-height: 1.5em;
+    border: 1px solid #000;
+}
+#associeted {background-color: #ddffff; }
+#unassocieted {background-color: #ffddff; }
+
+button:disabled {
+    color:#ddd;
+}
+#cluster-box .cluster {
+    display:inline-block;
+    border: 2px solid #005580;
+    background-color: rgba(0,85,128,0.2);
+    width: 500px;
+    vertical-align: top;
+}
+
+#cluster-box .cluster .users {
+    width: 100px;
+}
+#cluster-box .cluster .groups {
+    width: 100px;
+}
+#cluster-box .cluster .keys {
+    width: 100px;
+}
+
+
+#cluster-box .cluster .server {
+    display:inline-block;
+    border: 2px solid #805500;
+    background-color: rgba(255,0,0,0.2);
+    width: 100px;
+    vertical-align: top;
+}
+#cluster-box .cluster .server h3{
+ font-size:14px;
+ background-color: rgba(255,0,0,1);
+ color:#fff;
+}
+
+#cluster-box .cluster .server  .users{
+   display:none;
+}
+#cluster-box .cluster .server  .groups{
+    display:none;
+}
+
+#cluster-box .cluster .server  .keys{
+  display:none;
+}
+
+#pool  {display:none;}
+.recipients {
+    float:left;
+}
+.subjects {
+    float:right;
+}
+#recipient  {
+    border: 2px solid #0F0;
+    background-color:#DFD;
+    width:20%;
+    float:left;
+    height:400px;
+
+}
+#recipient .scrollable-y {
+    height: 100%;
+    overflow-y:auto
+}
+#subject {
+    border: 2px solid #00F;
+    background-color: #DDF;
+    width:70%;
+    float:right;
+    height:400px;
+    overflow:hidden;    
+}
+#subject .list,#subject .current,#subject .scrollable-y {
+  width:50%;
+}
+#recipient .msg ,#subject .msg {
+    width:50%;
+    font-size:3em;
+    text-align: center;
+    font-weight: bold;
+    vertical-align: middle;
+    line-height: 400px;
+ 
+}
+#recipient .msg {
+    width:100%;
+}
+#recipient li.active {
+    background-color:#484;
+    color:#fff;
+}
+
+#recipient .list img,#subject .list img {display:none;}
+
+
+li.list-group-item.active, li.list-group-item:hover {
+    background-color: #428bca;
+    border-color:#428bca;
+    color:#fff;
+}
+
+.spinner {
+  display: inline-block;
+  opacity: 0;
+  width: 0;
+
+  -webkit-transition: opacity 0.25s, width 0.25s;
+  -moz-transition: opacity 0.25s, width 0.25s;
+  -o-transition: opacity 0.25s, width 0.25s;
+  transition: opacity 0.25s, width 0.25s;
+}
+
+.has-spinner.spinning {
+  cursor:progress;
+}
+
+.has-spinner.spinning .spinner {
+  opacity: 1;
+  width: auto; /* This doesn't work, just fix for unkown width elements */
+}
+
+.has-spinner.btn-mini.spinning .spinner {
+    width: 10px;
+}
+
+.has-spinner.btn-small.spinning .spinner {
+    width: 13px;
+}
+
+.has-spinner.btn.spinning .spinner {
+    width: 16px;
+}
+
+.has-spinner.btn-large.spinning .spinner {
+    width: 19px;
+}
+#output {
+    min-height: 400px;
+    position:relative;
+}
+#output.loading {
+    background:#eee;    
+    border-radius:4px;
+    border:1px solid #ddd;
+    font-size: 200px;    
+    height: 400px;
+    line-height:400px;        
+    margin-top: 40px;    
+    text-align: center;
+    vertical-align:middle;
+}
+#output .overtop {
+    position:absolute;
+    top:0px;
+    right:18px;
+}

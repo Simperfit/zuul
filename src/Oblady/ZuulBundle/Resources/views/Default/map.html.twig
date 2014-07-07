@@ -1,0 +1,204 @@
+{% extends base_template %}
+{% block javascripts %}
+    {# Le js ci dessous devrait en majeur partie est migrer dans zuul.js du dossier public #}
+    {# Twig.js est pas forcément idéal mais c'etait surtout pour tester la techno #}
+    {{ parent() }}
+    {% javascripts "%kernel.root_dir%/../vendor/jms/twig-js/twig.js" %}
+    <script language="javascript" src="{{ asset_url }}"></script>
+     {% endjavascripts %}    
+     <script type="text/javascript" src="/bundles/obladyzuul/js/zuul.js"></script>
+    {% javascripts
+         "@ObladyZuulBundle/Resources/views/ajax/cluster.html.twig"
+         "@ObladyZuulBundle/Resources/views/ajax/server.html.twig"
+        "@ObladyZuulBundle/Resources/views/ajax/group.html.twig"
+         filter="twig_js, ?yui_js" %}
+    <script language="javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}    
+    <script>
+        $(document).ready(function() {
+        $('#groups').on('click','li',function(){
+              $('#groups li').removeClass('active');
+              var $current = $(this);
+              $current.addClass('active spinning');
+              $('#output').html('<i class="fa fa-spin fa-spinner"></i>').addClass('loading');
+              
+              $.getJSON($current.data('url'))
+               .done(function( data ) {
+                    if(data.error) {
+                    } else {
+                         var postHtml = Twig.render(groupSubject, data);
+                          $("#output").removeClass('loading').html(postHtml);
+                          $("#output .filter-input").on('keyup',function () {
+                            filterInputCallback($(this));
+                          });
+                    }
+                }).always(function(){
+                    $current.removeClass('spinning');
+                });
+          });           
+          $('#servers').on('click','li',function(){
+              $('#servers li').removeClass('active');
+              var $current = $(this);
+              $current.addClass('active spinning');
+              $('#output').html('<i class="fa fa-spin fa-spinner"></i>').addClass('loading');
+              
+              $.getJSON($current.data('url'))
+               .done(function( data ) {
+                    if(data.error) {
+                    } else {
+                         var postHtml = Twig.render(serverSubject, data);
+                          $("#output").removeClass('loading').html(postHtml);
+                          $("#output .filter-input").on('keyup',function () {
+                            filterInputCallback($(this));
+                          });
+                    }
+                }).always(function(){
+                    $current.removeClass('spinning');
+                });
+          });
+          $('#clusters').on('click','li',function(){
+              $('#clusters li').removeClass('active');
+              var $current = $(this);
+              $current.addClass('active spinning');
+              $('#output').html('<i class="fa fa-spin fa-spinner"></i>').addClass('loading');
+              
+              $.getJSON($current.data('url'))
+               .done(function( data ) {
+                    if(data.error) {
+                    } else {
+                         var postHtml = Twig.render(clusterSubject, data);
+                          $("#output").removeClass('loading').html(postHtml);
+                          $("#output .filter-input").on('keyup',function () {
+                            filterInputCallback($(this));
+                          });
+                    }
+                }).always(function(){
+                    $current.removeClass('spinning');
+                });
+          });
+          $('#output').on('click','button.btn-primary',function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var $form= $btn.parents('form');
+            $btn.button('loading').addClass('spinning');
+            $.ajax({
+                type: "POST",
+                url: $form.attr('action'),
+                data: $form.serialize(),
+                dataType: "json"
+                }) .done(function(data) {
+
+                    var alert = '<div class="alert alert-success alert-dismissible" role="alert">'+
+                        '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+                        '<strong>Sucess!</strong> Sauvegarde réussie.'+
+                        '</div>';
+                    $('#output').remove('div.alert').prepend(alert);
+                    $form.find('li').removeClass("list-group-item-info list-group-item-warning");
+                    $form.find('input').each(function(idx,elm){
+                        var $elm = $(elm);
+                        if($.inArray(parseInt($elm.attr("value")), data['ids']) !== -1) {
+                           $elm.parent().addClass("list-group-item-info");
+                        };
+                    }); 
+                })
+                .fail(function() {
+                    var alert = '<div class="alert alert-danger alert-dismissible" role="alert">'+
+                        '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+                        '<strong>Error!</strong>Erreur lors de l\'enregistrement.'+
+                        '</div>';
+                    $('#output').remove('.alert').prepend(alert);
+                  
+                }).always(function(){
+                   $btn.button('reset').removeClass('spinning');
+                });
+
+          });
+          $('#output ').on('click','.tab-content li',function(evt){
+               var $li = $(this);
+               $li.toggleClass('list-group-item-warning');
+               if(evt.target.nodeName==='LI') { // si j'ai clicker sur le label ou le input pas besoin de changer l'état du input
+                  var $input =  $li.find('input');
+                  $input.prop('checked',!$input.prop('checked'));
+               }
+
+          });
+          
+          
+       });   
+         
+   </script>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/bundles/obladyzuul/css/zuul.css" type="text/css" media="all"  />
+{% endblock %}
+
+{% block show %}
+    <div class="sonata-ba-view">
+        <div id="container">
+            <div class="row-fluid">
+                <div class="col-sm-2">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="active"><a href="#clusters" role="tab" data-toggle="tab">Clusters</a></li>
+                        <li><a href="#servers" role="tab" data-toggle="tab">Servers</a></li>
+                        <li><a href="#groups" role="tab" data-toggle="tab">Groups</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+
+                        <div class="tab-pane active" id="clusters">
+                            <ul class="list-group">
+                                {% for cluster in clusters %}
+                                    {% set cServers = cluster.servers %}  
+                                    <li class="list-group-item has-spinner" data-url="{{ path('oblady_zuul_api_cluster', { 'id': cluster.id }) }}">
+                                        <span class="badge pull-right tree-toggle">{{cServers|length}}</span>
+                                        <span class="spinner"><i class="fa fa-spin fa-spinner"></i></span>
+                                        <label label-default="" >{{cluster.name}}</label>
+                                        {% if cServers %}   
+                                            <ul class="list-group tree" style="display:none">
+                                                {% for server in cServers %}
+                                                <li class="list-group-item">{{server.name}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %} 
+                            </ul>
+
+                        </div>
+                        <div class="tab-pane" id="servers">
+                            <ul class="list-group">
+                                {% for server in servers %}
+                                <li class="list-group-item has-spinner" data-url="{{ path('oblady_zuul_api_server', { 'id': server.id }) }}">
+                                     <span class="spinner"><i class="fa fa-spin fa-spinner"></i></span>
+                                     {{server.name}}
+                                </li>
+                                {% endfor %} 
+                            </ul>
+                        </div>        
+                         <div class="tab-pane" id="groups">
+                            <ul class="list-group">
+                                {% for group in groups %}
+                                <li class="list-group-item has-spinner" data-url="{{ path('oblady_zuul_api_group', { 'id': group.id }) }}">
+                                     <span class="spinner"><i class="fa fa-spin fa-spinner"></i></span>
+                                     {{group.name}}
+                                </li>
+                                {% endfor %} 
+                            </ul>
+                        </div>            
+                    </div>
+                </div>
+                <div class="col-sm-10" id="output" >
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+                            
+                                
+                        
+ {% endblock %}
+
+
